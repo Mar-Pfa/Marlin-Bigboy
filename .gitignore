@@ -143,3 +143,6 @@ CMakeListsPrivate.txt
 
 #CLion
 cmake-build-*
+
+Marlin/MarlinOlder.ino
+Marlin/MarlinOlder.pde
