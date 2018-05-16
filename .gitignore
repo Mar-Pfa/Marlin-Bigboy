@@ -6,3 +6,5 @@ applet/
 *.bak
 *.DS_Store
 *.idea
+Marlin/MarlinOlder.ino
+Marlin/MarlinOlder.pde
