@@ -38,6 +38,7 @@ applet/
 *.rej
 *.bak
 *.idea
+<<<<<<< HEAD
 *.s
 *.i
 *.ii
@@ -143,6 +144,7 @@ CMakeListsPrivate.txt
 
 #CLion
 cmake-build-*
-
+=======
 Marlin/MarlinOlder.ino
 Marlin/MarlinOlder.pde
+>>>>>>> 6fc4a96... modify .gitignore

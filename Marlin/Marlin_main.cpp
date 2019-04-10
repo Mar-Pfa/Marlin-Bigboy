@@ -237,7 +237,8 @@
  * ************ Custom codes - This can change to suit future G-code regulations
  * M928 - Start SD logging: "M928 filename.gco". Stop with M29. (Requires SDSUPPORT)
  * M999 - Restart after being stopped by error
- *
+ * M960 - Manual Heater Enable Disable with M960 S0 or M960 S1
+ * 
  * "T" Codes
  *
  * T0-T3 - Select an extruder (tool) by index: "T<n> F<units/min>"
@@ -7632,6 +7633,36 @@ inline void gcode_M105() {
 
 #endif // AUTO_REPORT_TEMPERATURES
 
+
+/**
+ * S0=off S1 = on
+ * P=Heater Number (default 0)
+**/
+inline void gcode_M960() {
+  const uint8_t s= parser.byteval('S');
+  const uint8_t p = parser.byteval('P');
+  switch(p)
+  {
+    case 0:
+      SERIAL_ECHOLNPAIR("set Heaterpin ", s);
+      WRITE_HEATER_0(s==1?HIGH:LOW);
+      break;
+      /*
+    case 1:
+      WRITE_HEATER_1(s==1?HIGH:LOW);
+      break;
+      */
+      /*
+    case 2:
+      WRITE_HEATER_2(s==1?HIGH:LOW);
+      break;
+    case 3:
+      WRITE_HEATER_3(s==1?HIGH:LOW);
+      break;
+      */
+  }
+}
+
 #if FAN_COUNT > 0
 
   /**
@@ -11921,6 +11952,10 @@ void process_parsed_command() {
           gcode_M107();
           break;
       #endif // FAN_COUNT > 0
+
+      case 960:
+        gcode_M960();
+        break;
 
       #if ENABLED(PARK_HEAD_ON_PAUSE)
         case 125: // M125: Store current position and move to filament change position

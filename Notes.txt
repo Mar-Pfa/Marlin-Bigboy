@@ -1,3 +1,38 @@
+G92 Set Position To Coordinates (override current position)
+
 M119 -> show Endstop status
 
 M114 -> get current position
+
+M211 S0 -> Disable Software Endstops
+
+M500 -> Store Settings
+M503 -> Show Settings
+
+
+9.7475
+
+10mm
+
+9.3950
+
+
+
+206.7 vs 32
+
+0 vs 375
+
+
+Distance (think vs real)
+206.7 vs 343
+
+48.05
+
+
+0 vs 20
+
+300 vs 518
+
+300 vs 498
+
+-> 48,2
