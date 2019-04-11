@@ -4292,7 +4292,7 @@ void home_all_axes() { gcode_G28(true); }
         }
         else {
           // For G29 S2 after adjusting Z.
-          mbl.set_zigzag_z(mbl_probe_index - 1, current_position[Z_AXIS]);
+          mbl.set_zigzag_z(mbl_probe_index - 1, current_position[Z_AXIS]+10);
           #if HAS_SOFTWARE_ENDSTOPS
             soft_endstops_enabled = enable_soft_endstops;
           #endif

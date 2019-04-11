@@ -6,9 +6,19 @@ M114 -> get current position
 
 M211 S0 -> Disable Software Endstops
 
+M302 S0    ; Allow extrusion at any temperature
+
 M500 -> Store Settings
 M503 -> Show Settings
 
+
+SET Laser TTL
+M42 P45 S0
+
+Set Servo Einfahren
+M280 P0 S100
+Set Servo Ausfahren
+M280 P0 S200
 
 9.7475
 
@@ -36,3 +46,11 @@ Distance (think vs real)
 300 vs 498
 
 -> 48,2
+
+
+-18  vs 13
+-10 vs 373
+8 vs 360
+
+11350
+-> 252
