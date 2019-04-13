@@ -4196,7 +4196,7 @@ void home_all_axes() { gcode_G28(true); }
 
     #if MANUAL_PROBE_HEIGHT > 0
       const float prev_z = current_position[Z_AXIS];
-      do_blocking_move_to(rx, ry, MANUAL_PROBE_HEIGHT);
+      do_blocking_move_to(rx, ry, prev_z+ MANUAL_PROBE_HEIGHT);
       do_blocking_move_to_z(prev_z);
     #else
       do_blocking_move_to_xy(rx, ry);
@@ -4292,7 +4292,7 @@ void home_all_axes() { gcode_G28(true); }
         }
         else {
           // For G29 S2 after adjusting Z.
-          mbl.set_zigzag_z(mbl_probe_index - 1, current_position[Z_AXIS]+10);
+          mbl.set_zigzag_z(mbl_probe_index - 1, current_position[Z_AXIS]);
           #if HAS_SOFTWARE_ENDSTOPS
             soft_endstops_enabled = enable_soft_endstops;
           #endif
@@ -6305,6 +6305,35 @@ inline void gcode_G92() {
   }
 
 #endif // HAS_RESUME_CONTINUE
+
+
+// support grbl syntax -> M3 activate laser, M5 shut down
+inline void gcode_M3()
+{
+    if (!parser.seenval('S')) {
+      SERIAL_ECHOPGM("Add Parameter S0 - S255 for setting up the beam power");
+      return;
+    }
+    const byte pin_status = parser.value_byte();
+    
+    stepper.synchronize();   // wait until previous movement commands (G0/G0/G2/G3) have completed before playing with the spindle
+    const int pin_number = 45;
+    pinMode(pin_number, OUTPUT);
+    digitalWrite(pin_number, pin_status);
+    analogWrite(pin_number, pin_status);
+}
+
+inline void gcode_M5(bool inSync)
+{
+    if (inSync)
+      stepper.synchronize();   // wait until previous movement commands (G0/G0/G2/G3) have completed before playing with the spindle
+    
+    const int pin_number = 45;
+    pinMode(pin_number, OUTPUT);
+    digitalWrite(pin_number, 0);
+    analogWrite(pin_number, 0);  
+}
+
 
 #if ENABLED(SPINDLE_LASER_ENABLE)
   /**
@@ -11783,6 +11812,14 @@ void process_parsed_command() {
           break;
       #endif // ULTIPANEL
 
+      /* special version for Marlin Big Boy Hardware */
+      case 3:
+         gcode_M3();
+         break;
+      case 5:
+         gcode_M5(true);
+         break;
+
       #if ENABLED(SPINDLE_LASER_ENABLE)
         case 3:
           gcode_M3_M4(true);   // M3: turn spindle/laser on, set laser/spindle power/speed, set rotation direction CW
@@ -11794,6 +11831,7 @@ void process_parsed_command() {
           gcode_M5();     // M5 - turn spindle/laser off
           break;          // synchronizes with movement commands
       #endif
+      
       case 17: // M17: Enable all stepper motors
         gcode_M17();
         break;
@@ -14343,6 +14381,9 @@ void stop() {
  */
 void setup() {
 
+
+  gcode_M5(false);
+  
   #if ENABLED(MAX7219_DEBUG)
     Max7219_init();
   #endif
@@ -14573,6 +14614,7 @@ void setup() {
     delay(1000);
     WRITE(LCD_PINS_RS, HIGH);
   #endif
+
 }
 
 /**
