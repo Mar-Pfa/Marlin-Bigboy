@@ -4247,8 +4247,8 @@ void home_all_axes() { gcode_G28(true); }
    *  v Y-axis  1-n
    *
    */
-  inline void gcode_G29() {
-
+  inline void gcode_G29_() {
+    
     static int mbl_probe_index = -1;
     #if HAS_SOFTWARE_ENDSTOPS
       static bool enable_soft_endstops;
@@ -4256,7 +4256,7 @@ void home_all_axes() { gcode_G28(true); }
 
     const MeshLevelingState state = (MeshLevelingState)parser.byteval('S', (int8_t)MeshReport);
     if (!WITHIN(state, 0, 5)) {
-      SERIAL_PROTOCOLLNPGM("S out of range (0-5).");
+      SERIAL_ECHOPGM("S out of range (0-5).");
       return;
     }
 
@@ -4265,11 +4265,11 @@ void home_all_axes() { gcode_G28(true); }
     switch (state) {
       case MeshReport:
         if (leveling_is_valid()) {
-          SERIAL_PROTOCOLLNPAIR("State: ", planner.leveling_active ? MSG_ON : MSG_OFF);
+          SERIAL_ECHOPGM("State: ", planner.leveling_active ? MSG_ON : MSG_OFF);
           mbl_mesh_report();
         }
         else
-          SERIAL_PROTOCOLLNPGM("Mesh bed leveling has no data.");
+          SERIAL_ECHOPGM("Mesh bed leveling has no data.");
         break;
 
       case MeshStart:
@@ -4280,7 +4280,7 @@ void home_all_axes() { gcode_G28(true); }
 
       case MeshNext:
         if (mbl_probe_index < 0) {
-          SERIAL_PROTOCOLLNPGM("Start mesh probing with \"G29 S1\" first.");
+          SERIAL_ECHOPGM("Start mesh probing with \"G29 S1\" first.");
           return;
         }
         // For each G29 S2...
@@ -4318,7 +4318,7 @@ void home_all_axes() { gcode_G28(true); }
 
           // After recording the last point, activate home and activate
           mbl_probe_index = -1;
-          SERIAL_PROTOCOLLNPGM("Mesh probing done.");
+          SERIAL_ECHOPGM("Mesh probing done.");
           BUZZ(100, 659);
           BUZZ(100, 698);
           mbl.has_mesh = true;
@@ -11769,7 +11769,7 @@ void process_parsed_command() {
         case 33: // G33: Delta Auto-Calibration
           gcode_G33();
           break;
-
+*
       #endif // DELTA_AUTO_CALIBRATION
 
       #if ENABLED(G38_PROBE_TARGET)
